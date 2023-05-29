@@ -2,18 +2,14 @@ import React from 'react';
 import styles from './ContactListItemWithDelete.module.css';
 
 const ContactListItemWithDelete = ({ contact, onDelete }) => {
-  const handleDelete = () => {
-    onDelete(contact.id);
-  };
+  const { id, name, number, creationDate } = contact;
 
   return (
-    <li className={styles.contactListItem} key={contact.id}>
-      <span className={styles.name}>{contact.name}:</span> {contact.number}
-      <button
-        className={styles.deleteButton}
-        type="button"
-        onClick={handleDelete}
-      >
+    <li className={styles.contactListItem}>
+      <p>{name}</p>
+      <p>{number}</p>
+      <p>{creationDate}</p>
+      <button className={styles.button} onClick={() => onDelete(id)}>
         Delete
       </button>
     </li>

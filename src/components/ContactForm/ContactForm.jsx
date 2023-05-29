@@ -1,79 +1,67 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import styles from './ContactForm.module.css';
 
-const ContactForm = ({ contacts, onSubmit }) => {
+const ContactForm = ({ onSubmit }) => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
-  const handleSubmit = e => {
-    e.preventDefault();
-
-    if (!name || !number) {
-      alert('Please enter a name and a number.');
-      return;
+  const handleChange = event => {
+    const { name, value } = event.target;
+    if (name === 'name') {
+      setName(value);
+    } else if (name === 'number') {
+      setNumber(value);
     }
+  };
 
-    const numberPattern = /^\d+$/;
-    if (!numberPattern.test(number)) {
-      alert('Please enter a valid number.');
-      return;
-    }
+  const handleSubmit = event => {
+    event.preventDefault();
 
-    if (name.length < 2 || name.length > 15) {
-      alert('Please enter a name between 2 and 15 characters.');
-      return;
-    }
+    const normalizedContact = {
+      name: name.toLowerCase(),
+      number,
+    };
 
-    const existingContact =
-      contacts &&
-      contacts.find(
-        contact => contact.name.toLowerCase() === name.toLowerCase()
-      );
-    if (existingContact) {
-      alert('Contact already exists.');
-      return;
-    }
-
-    onSubmit({ name: name.toLowerCase(), number });
+    onSubmit(normalizedContact);
     setName('');
     setNumber('');
   };
 
-  const handleNameChange = e => {
-    setName(e.target.value);
-  };
-
-  const handleNumberChange = e => {
-    setNumber(e.target.value);
-  };
-
   return (
-    <form className={styles.form} onSubmit={handleSubmit}>
-      <label className={styles.label}>
-        Name
+    <form className={styles.container} onSubmit={handleSubmit}>
+      <label>
+        Name:
         <input
           className={styles.input}
           type="text"
+          name="name"
+          pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+          title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+          required
           value={name}
-          onChange={handleNameChange}
-          placeholder="Enter a name"
+          onChange={handleChange}
         />
       </label>
-      <label className={styles.label}>
-        Number
+      <label>
+        Number:
         <input
           className={styles.input}
-          type="tel"
+          type="text"
+          name="number"
           value={number}
-          onChange={handleNumberChange}
-          placeholder="Enter a number"
+          onChange={handleChange}
         />
       </label>
       <button className={styles.button} type="submit">
-        Add contact
+        Add Contact
       </button>
     </form>
   );
+};
+
+ContactForm.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
 };
 
 export default ContactForm;
